@@ -1,21 +1,19 @@
-var express = require('express');
 var nunjucks = require('nunjucks');
+var clc = require('cli-color');
+var app = require('express')();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
-var app = express();
+server.listen(3001);
+
 nunjucks.configure('views', {
     express: app,
     autoescape: true
 });
 app.set('view engine', 'html');
 
-app.get('/', function (req, res) {
-    res.render('index');
-});
+console.log(clc.green('✔ Serveur sur le port 3001'));
 
-app.get('/api', function (req, res) {
-    res.send('Hello World!');
-});
-
-app.listen(3001, function () {
-    console.log('Example app listening on port 3000!');
-});
+require('./controller/paymium')(io);
+require('./controller/twitter')(io);
+require('./controller/front')(app);
